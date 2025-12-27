@@ -1,0 +1,75 @@
+/* โครงสร้างหลัก */
+.sidebar-user {
+  width: 260px;
+  height: 100vh;
+  background-color: #ffffff; /* ใช้พื้นหลังขาวให้ดูคลีน */
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #e2e8f0; /* เส้นขอบแทนสีเข้ม */
+}
+
+/* หัวข้อ USER PANEL */
+.account-section {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  padding: 30px 20px;
+  color: #2563eb; /* สีน้ำเงินสว่าง */
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* ป้ายกำกับหมวดหมู่ */
+.account-label {
+  padding: 25px 25px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* สไตล์เมนู (Class ที่ส่งเข้าไปใน Nav) */
+.nav-item-custom {
+  padding: 12px 20px;
+  margin: 4px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 15px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+}
+
+/* เมื่อ Hover */
+.nav-item-custom:hover {
+  background-color: #f1f5f9;
+  color: #2563eb;
+}
+
+/* เมื่อหน้าปัจจุบัน Active */
+.nav-item-custom.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* ส่วนล่างสุด */
+.logout-wrapper {
+  margin-top: auto;
+  padding-bottom: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* เฉพาะปุ่มออกจากระบบ */
+.logout-wrapper .nav-item-custom {
+  color: #ef4444; /* สีแดง */
+}
+
+.logout-wrapper .nav-item-custom:hover {
+  background-color: #fef2f2;
+}

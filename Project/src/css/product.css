@@ -1,0 +1,134 @@
+/* ===== Page Container ===== */
+.product-page-container {
+  padding: 24px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ===== Header ===== */
+.product-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 10;
+  padding-bottom: 12px;
+}
+
+
+.product-page-header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #222;
+}
+
+/* ===== Search Section ===== */
+.search-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.search-bar {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 260px;
+  font-size: 14px;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #000;
+}
+
+.product-count-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.product-count-text span {
+  font-weight: bold;
+  color: #000;
+}
+
+/* ===== Cart Icon ===== */
+.cart-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-icon {
+  color: #222;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: red;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+/* ===== Products Grid ===== */
+.products-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  min-height: 300px; /* ⭐ สำคัญ */
+  align-content: start;
+}
+
+/* ===== Empty State ===== */
+.no-products {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 16px;
+  color: #777;
+}
+
+.variant-group {
+  margin: 8px 0;
+}
+
+.variant-label {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.variant-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.variant-btn {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.variant-btn.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: white;
+}
+
+.variant-hint {
+  font-size: 12px;
+  color: #999;
+}

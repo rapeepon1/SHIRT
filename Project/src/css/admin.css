@@ -1,0 +1,78 @@
+/* โครงสร้างหลักของ Sidebar */
+.admin-sidebar {
+  width: 260px;
+  height: 100vh; /* ความสูงเต็มหน้าจอ */
+  background-color: #1e293b; /* สีกรมท่าเข้ม สไตล์ Admin Dashboard */
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column; /* จัดเรียงแนวตั้ง */
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ส่วนหัวข้อ */
+.admin-title {
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  padding: 30px 20px;
+  letter-spacing: 1px;
+  color: #38bdf8; /* สีฟ้าสว่าง */
+  border-bottom: 1px solid #334155;
+}
+
+/* ป้ายกำกับหมวดหมู่ (Label) */
+.admin-section-label {
+  padding: 25px 25px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* สไตล์พื้นฐานของ NavItem (สำหรับ class .nav-item-custom ในคอมโพเนนต์ย่อย) */
+.nav-item-custom {
+  padding: 14px 25px;
+  margin: 4px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  font-size: 15px;
+  color: #cbd5e1;
+}
+
+/* เมื่อ Hover หรือเอาเมาส์ไปวาง */
+.nav-item-custom:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+/* เมื่อเมนูนั้น Active (ถูกเลือก) */
+.nav-item-custom.active {
+  background-color: #0ea5e9; /* สีฟ้าหลัก */
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ส่วนล่างสุด (Logout Wrapper) */
+.logout-wrapper {
+  margin-top: auto; /* ดันลงไปล่างสุด */
+  padding-bottom: 20px;
+  border-top: 1px solid #334155;
+}
+
+/* สไตล์พิเศษสำหรับปุ่มออกจากระบบ */
+.nav-item-custom.logout {
+  color: #fb7185; /* สีแดงอ่อน */
+}
+
+.nav-item-custom.logout:hover {
+  background-color: #4c1d24;
+  color: #ff99a4;
+}

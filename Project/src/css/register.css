@@ -1,0 +1,112 @@
+/* ตั้งค่าพื้นฐานสำหรับหน้าจอ */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f7f6; /* สีพื้นหลังอ่อนๆ */
+  font-family: 'Inter', -apple-system, sans-serif;
+  padding: 20px;
+}
+
+/* การ์ดฟอร์มลงทะเบียน */
+.register-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.register-card h1 {
+  margin-bottom: 10px;
+  color: #333;
+  letter-spacing: 2px;
+  font-size: 2rem;
+}
+
+.register-card h2 {
+  margin-bottom: 30px;
+  color: #666;
+  font-weight: 400;
+  font-size: 1.2rem;
+}
+
+/* การจัดการ Layout แบบ Grid */
+.grid-row {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* ระยะห่างระหว่างช่อง input */
+  margin-bottom: 20px;
+}
+
+/* สไตล์ของ Input */
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box; /* ป้องกัน input ทะลุขอบ */
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* ปุ่มกด */
+.btn-row {
+  margin-top: 10px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* ลิงก์ไปหน้าเข้าสู่ระบบ */
+.register-link {
+  margin-top: 20px;
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* ข้อความแจ้งเตือน Error */
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Responsive: ถ้าหน้าจอเล็ก ให้ input ชื่อ-นามสกุล อยู่บรรทัดเดียวกันได้ถ้าต้องการ */
+@media (min-width: 400px) {
+    /* คุณสามารถปรับแต่ง grid เพิ่มเติมตรงนี้ได้ */
+}
