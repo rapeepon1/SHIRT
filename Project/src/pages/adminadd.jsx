@@ -1,4 +1,3 @@
-// pages/adminaddproduct.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Save, Plus, Trash2 } from "lucide-react";
@@ -62,7 +61,6 @@ const AdminAdd = () => {
       <h2>เพิ่มสินค้าใหม่</h2>
 
       <form onSubmit={handleSubmit} className="edit-form">
-        {/* ===== product ===== */}
         <div className="form-group">
           <label>ชื่อสินค้า</label>
           <input
@@ -99,7 +97,6 @@ const AdminAdd = () => {
           />
         </div>
 
-        {/* ===== variants ===== */}
         <h3>Size / Color / Stock</h3>
 
         {variants.map((v, index) => (

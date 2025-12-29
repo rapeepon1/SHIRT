@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authcontext";
 import "../css/login.css";
 
 const Login = () => {
-  const [role, setRole] = useState(null);
+  const { setToken } = useAuth(); // ดึงฟังก์ชันเก็บ Token มาใช้
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,7 +14,6 @@ const Login = () => {
     e.preventDefault();
     try {
       setError("");
-
       const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -23,10 +23,10 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setRole(data.role);
+        setToken(data.token); // เก็บ Token ไว้ใน data
         if (data.role === "admin") {
-          navigate("/admin_product/:id");
-        } else if (data.role === "user") {
+          navigate("/admin_product/${id}");
+        } else {
           navigate("/product");
         }
       } else {
@@ -34,7 +34,6 @@ const Login = () => {
       }
     } catch (err) {
       setError("ไม่สามารถเชื่อมต่อ SERVER");
-      console.error("Login error:", err);
     }
   };
 

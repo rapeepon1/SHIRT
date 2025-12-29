@@ -5,7 +5,6 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // ✅ เพิ่มสินค้า (ใช้ product_detail_id ที่ส่งมา)
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(

@@ -1,9 +1,8 @@
-// pages/product.jsx
 import React, { useState, useEffect } from "react";
 import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/productcard";
-import { useCart } from "../context/cartcontext"; // 1. เพิ่มการ import useCart
+import { useCart } from "../context/cartcontext"; 
 import "../css/product.css";
 
 const Product = () => {
@@ -11,8 +10,6 @@ const Product = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { addToCart } = useCart();
   const navigate = useNavigate();
-
-  // ลบฟังก์ชัน addToCart ตัวเก่าที่อยู่ในหน้านี้ออกให้หมด (รวมถึง const [cart, setCart])
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,7 +52,7 @@ const Product = () => {
             <ProductCard
               key={item.product_id}
               product={item}
-              onAddToCart={addToCart} // ✅ ส่งฟังก์ชันตรง ๆ
+              onAddToCart={addToCart}
             />
           ))
         ) : (

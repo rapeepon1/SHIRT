@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClipboardList, ChevronLeft, Eye, X } from "lucide-react"; // เพิ่ม Eye และ X
+import { useAuth } from "../context/authcontext";
+import { ClipboardList, ChevronLeft, Eye, X } from "lucide-react";
 import "../css/adminorder.css";
 
 const AdminOrder = () => {
+  const { token } = useAuth();
   const [allOrders, setAllOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null); // State สำหรับ Modal
+  const [selectedOrder, setSelectedOrder] = useState(null); 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!token) return;
+
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:3000/order");
+        const response = await fetch("http://localhost:3000/order", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await response.json();
         setAllOrders(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("ไม่สามารถเชื่อมต่อ SERVER", err.message);
+        console.error("SERVER ERROR", err.message);
       }
     };
     fetchOrders();
-  }, []);
+  }, [token]);
 
   const updateStatus = async (order_id, status) => {
     await fetch(`http://localhost:3000/order/${order_id}`, {
@@ -50,7 +56,7 @@ const AdminOrder = () => {
         <thead>
           <tr>
             <th>เลขที่คำสั่งซื้อ</th>
-            <th>วันที่สั่งซื้อ</th> {/* เพิ่มคอลัมน์วันที่ */}
+            <th>วันที่สั่งซื้อ</th>
             <th>ผู้สั่งซื้อ</th>
             <th>ยอดรวม</th>
             <th>สถานะ</th>
@@ -98,7 +104,6 @@ const AdminOrder = () => {
         </tbody>
       </table>
 
-      {/* Modal สำหรับ Admin ดูรายละเอียดสินค้า */}
       {selectedOrder && (
         <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

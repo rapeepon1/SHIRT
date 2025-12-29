@@ -1,0 +1,177 @@
+
+--------------------------------------------------------------------------------
+Method post -> /register 
+
+-----input-------
+email, password, first_name, last_name
+
+email: user@mail.com
+password: user
+first_name: user
+last_name: hello
+
+-------output-------
+console.log(req.body);
+{
+  "email": "mama@mail.com",
+  "password": "mama",
+  "first_name": "mama",
+  "last_name": "Jaidee"
+}
+
+status(201) { "success": true, "message": "ลงทะเบียนสำเร็จ" }
+status(400) { "success": false, "message": "อีเมลนี้ถูกใช้งานแล้ว" }
+status(500) { "message": "Server error2" }
+
+------------------------------------------------------------------------
+Method post -> /login
+------input-------
+email, password
+
+email: user@mail.com
+password: user
+
+-----output------
+{
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3NjY5MDU0OTMsImV4cCI6MTc2Njk5MTg5M30.2J-RaTeNC8n0FUrRkTHQs9gDGEqgSCZCNxGgLAZGguI",
+    "role": "user"
+}
+
+status(401) { "message": "รหัสผ่านไม่ถูกต้อง" }
+status(401) { "message": "ไม่พบผู้ใช้" }
+status(401) { "success": false, "message": "รหัสผ่านไม่ถูกต้อง" }
+status(401) { "success": false, "message": "ไม่พบผู้ใช้งานนี้" }
+status(500) { "message": "Server error2" }
+
+------------------------------------------------------------------------------------------
+Method get -> /product
+------input-------
+ไม่มี
+-------output------
+ res.json(result.rows);
+    {
+        "product_id": 1,
+        "product_name": "GQ",
+        "product_price": "350.00",
+        "product_image": "",
+        "variants": [
+            {
+                "product_detail_id": 6,
+                "size": "M",
+                "color": "Black",
+                "stock": 5
+            },
+            {
+                "product_detail_id": 7,
+                "size": "L",
+                "color": "Black",
+                "stock": 0
+            }
+        ]
+    },
+    status (500) ข้อความ Server error4
+
+--------------------------------------------------------------------------------
+Method post -> /product
+
+--------input--------
+{
+  "product_name": "Polo Shirt",
+  "product_price": 450,
+  "product_image": "image_url",
+  "variants": [
+    { "size": "L", "color": "Blue", "stock": 20 },
+    { "size":    "XL", "color": "Black", "stock": 15 }
+  ]
+}
+
+------output-------
+{
+    "success": true
+}
+
+status(500) { "message": "Server error5" }
+
+---------------------------------------------------------
+Method put -> /product/:{id} 
+-------input-------
+/product/1 แสดง input
+{
+    "product_id": 1,
+    "product_name": "Gucci",
+    "product_price": "1000.00",
+    "product_image": "",
+    "variants": [
+        {
+            "product_detail_id": 6,
+            "size": "S",
+            "color": "White",
+            "stock": 10
+        }
+    ]
+}
+-----output-----
+status(200){ "success": true }
+status(500) { "message: Server error6" }
+
+-------------------------------------------------
+Method get -> /order
+
+-----input-----
+[
+  {
+    "order_id": 15,
+    "user_id": 3,
+    "ship_name": "user",
+    "ship_phone": "0987654567",
+    "order_date": "2025-12-27T23:24:16.136Z",
+    "total_amount": 350.00,
+    "status": "รอดำเนินการ",
+    "items": [
+      {
+        "name": "Thai",
+        "quantity": 1,
+        "price": 350.00
+      }
+    ]
+  }
+]
+-----output------
+
+status(401) { "message": "กรุณาเข้าสู่ระบบ" }
+status(500) { "message": "Server error7" }
+
+-----------------------------------------------------
+Method post -> /order
+------intput------
+{
+  "items": [
+    {
+      "product_detail_id": 16,
+      "quantity": 1,
+      "price": 350.00
+    }
+  ],
+  "total_amount": 350.00,
+  "address": {
+    "name": "user",
+    "phone": "0812345678",
+    "detail": "123 user"
+  },
+  "status": "รอดำเนินการ"
+}
+
+status(200) {"success": true}
+status(400) {"message": "สินค้าหมด"}
+status(401) {"message": "กรุณาเข้าสู่ระบบ"}
+status(403) {"message": "Token ไม่ถูกต้องหรือหมดอายุ"}
+
+---------------------------------------------------------
+Method put -> /order/:id
+-------inuput-------
+/order/1
+status: "รอดำเนินการ","กำลังดำเนินการ","จัดส่งสำเร็จ"
+
+-----output-----
+status { "success": true }

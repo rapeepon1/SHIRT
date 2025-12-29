@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import jwt from "jsonwebtoken";
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
@@ -7,6 +8,21 @@ import { Pool } from "pg";
 const app = express();
 const port = 3000;
 const saltRounds = 10;
+const SECRET_KEY = "tar_secret"; // รหัสสำหรับตรวจสอบ Token
+
+// Middleware สำหรับตรวจสอบ Token และดึงข้อมูล User
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ message: "กรุณาเข้าสู่ระบบ" });
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Token ไม่ถูกต้องหรือหมดอายุ" });
+    req.user = decoded;
+    next();
+  });
+};
 
 const pool = new Pool({
   user: "postgres",
@@ -67,38 +83,24 @@ app.post("/register", async (req, res) => {
 //****** login *******
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    const result = await pool.query(
-      'SELECT * FROM "users" WHERE "email" = $1',
-      [email]
-    );
-
-    if (result.rows.length === 0) {
-      return res
-        .status(401)
-        .json({ success: false, message: "ไม่พบผู้ใช้งานนี้" });
-    }
+    const result = await pool.query('SELECT * FROM "users" WHERE "email" = $1', [email]);
+    if (result.rows.length === 0) return res.status(401).json({ message: "ไม่พบผู้ใช้" });
 
     const user = result.rows[0];
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
-      res.json({
-        success: true,
-        role: user.role,
-        user: {
-          id: user.id,
-          first_name: user.first_name,
-          email: user.email,
-        },
-      });
+      const token = jwt.sign(
+        { id: user.user_id, role: user.role }, 
+        SECRET_KEY, 
+        { expiresIn: '24h' }
+      );
+      res.json({ success: true, token, role: user.role });
     } else {
-      res.status(401).json({ success: false, message: "รหัสผ่านไม่ถูกต้อง" });
+      res.status(401).json({ message: "รหัสผ่านไม่ถูกต้อง" });
     }
   } catch (err) {
-    console.error(err.message);
     res.status(500).send("Server error3");
   }
 });
@@ -133,11 +135,10 @@ app.get("/product", async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error4" });
   }
 });
 
-// ดึง product + variants
 app.get("/product/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -172,7 +173,7 @@ app.get("/product/:id", async (req, res) => {
     res.json(result.rows[0]);
   } catch (err) {
     console.error("GET PRODUCT ERROR:", err.message);
-    res.status(500).json({ message: "โหลดสินค้าไม่สำเร็จ" });
+    res.status(500).json({ message: "Server error5" });
   }
 });
 
@@ -182,7 +183,7 @@ app.post("/product", async (req, res) => {
   try {
     await pool.query("BEGIN");
 
-    // 1️⃣ insert product
+// เพ่ิม
     const productRes = await pool.query(
       `INSERT INTO product (product_name, product_price, product_image)
        VALUES ($1, $2, $3)
@@ -192,7 +193,7 @@ app.post("/product", async (req, res) => {
 
     const productId = productRes.rows[0].product_id;
 
-    // 2️⃣ insert product_detail (size / color / stock)
+
     if (Array.isArray(variants)) {
       for (const v of variants) {
         if (!v.size || !v.color) continue;
@@ -211,7 +212,7 @@ app.post("/product", async (req, res) => {
   } catch (err) {
     await pool.query("ROLLBACK");
     console.error(err.message);
-    res.status(500).json({ message: "เพิ่มสินค้าไม่สำเร็จ" });
+    res.status(500).json({ message: "Server error5" });
   }
 });
 
@@ -222,7 +223,7 @@ app.put("/product/:id", async (req, res) => {
   try {
     await pool.query("BEGIN");
 
-    // 1️⃣ UPDATE product (ธรรมดา)
+/// แก้ไข
     await pool.query(
       `
       UPDATE product
@@ -239,7 +240,7 @@ app.put("/product/:id", async (req, res) => {
       ]
     );
 
-    // 2️⃣ UPDATE / INSERT product_detail (ไม่ลบ)
+// อัพเดต ถ้ายังไม่มี เพิ่ม
     if (Array.isArray(variants)) {
       for (const v of variants) {
         console.log(v)
@@ -247,7 +248,6 @@ app.put("/product/:id", async (req, res) => {
         if (!v.size || !v.color) continue;
 
         if (v.product_detail_id) {
-          // UPDATE variant เดิม
           await pool.query(
             `
     UPDATE product_detail
@@ -259,7 +259,6 @@ app.put("/product/:id", async (req, res) => {
             [v.size, v.color, Number(v.stock), v.product_detail_id]
           );
         } else {
-          // INSERT variant ใหม่ ❌❌❌
           await pool.query(
             `
     INSERT INTO product_detail (product_id, size, color, stock)
@@ -275,56 +274,59 @@ app.put("/product/:id", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     await pool.query("ROLLBACK");
-    console.error("PUT PRODUCT ERROR:", err.message);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Server error6" });
   }
 });
 
 //**** order ****
-app.get("/order", async (_, res) => {
+app.get("/order", authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query(`
-      SELECT 
-        o.*, 
-        json_agg(
-          json_build_object(
-            'name', p.product_name,
-            'quantity', od.quantity,
-            'price', od.unit_price
-          )
-        ) FILTER (WHERE p.product_name IS NOT NULL) as items
+    const userId = req.user.id; // ดึง ID จาก Token ที่ถอดรหัสแล้ว
+    const role = req.user.role;
+
+    let queryText = `
+      SELECT o.*, 
+      json_agg(json_build_object('name', p.product_name, 'quantity', od.quantity, 'price', od.unit_price)) 
+      FILTER (WHERE p.product_name IS NOT NULL) as items
       FROM orders o
       LEFT JOIN order_detail od ON o.order_id = od.order_id
       LEFT JOIN product_detail pd ON od.product_detail_id = pd.product_detail_id
       LEFT JOIN product p ON pd.product_id = p.product_id
-      GROUP BY o.order_id
-      ORDER BY o.order_date DESC
-    `);
+    `;
+
+    // ถ้าไม่ใช่ Admin ให้เห็นเฉพาะของตัวเอง
+    if (role !== 'admin') {
+      queryText += ` WHERE o.user_id = $1 `;
+    }
+    
+    queryText += ` GROUP BY o.order_id ORDER BY o.order_date DESC`;
+
+    const result = (role !== 'admin') 
+      ? await pool.query(queryText, [userId]) 
+      : await pool.query(queryText);
+
     res.json(result.rows);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send("Server error7");
   }
 });
 
-app.post("/order", async (req, res) => {
+app.post("/order", authenticateToken, async (req, res) => {
   const { items, total_amount, address, status } = req.body;
+  const userId = req.user.id; // ดึง ID จาก Token ที่ผ่านการตรวจสอบแล้ว
 
   try {
     await pool.query("BEGIN");
 
-    // 1️⃣ insert order
     const orderRes = await pool.query(
       `INSERT INTO orders
-       (ship_name, ship_phone, ship_address, order_date, total_amount, status)
-       VALUES ($1,$2,$3,NOW(),$4,$5)
+       (user_id, ship_name, ship_phone, ship_address, order_date, total_amount, status)
+       VALUES ($1, $2, $3, $4, NOW(), $5, $6)
        RETURNING order_id`,
-      [address.name, address.phone, address.detail, total_amount, status]
+      [userId, address.name, address.phone, address.detail, total_amount, status]
     );
 
     const orderId = orderRes.rows[0].order_id;
-
-    // 2️⃣ loop สินค้า
     for (const item of items) {
       // ตรวจ stock
       const stockRes = await pool.query(
@@ -337,10 +339,10 @@ app.post("/order", async (req, res) => {
         stockRes.rows.length === 0 ||
         stockRes.rows[0].stock < item.quantity
       ) {
-        throw new Error("สินค้าหมดหรือจำนวนไม่พอ");
+        throw new Error("สินค้าหมด");
       }
 
-      // insert order_detail
+      // เพิ่ม
       await pool.query(
         `INSERT INTO order_detail
          (order_id, product_detail_id, quantity, unit_price)

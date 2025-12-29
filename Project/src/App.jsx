@@ -13,6 +13,7 @@ import AdminProduct from "./pages/adminproduct";
 import AdminEdit from "./pages/adminedit"
 import AdminAdd from "./pages/adminadd";
 import { CartProvider } from "./context/cartcontext";
+import { AuthProvider } from './context/authcontext';
 import "./App.css";
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
             : "main-content"
         }
       >
+        <AuthProvider>
         <CartProvider>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -51,6 +53,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
         </Routes>
         </CartProvider>
+        </AuthProvider>
       </main>
     </>
   );

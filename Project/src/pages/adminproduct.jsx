@@ -60,7 +60,6 @@ const AdminProduct = () => {
                 <strong>{item.product_name}</strong>
               </td>
 
-              {/* ✅ แสดง variants */}
               <td>
                 {item.variants && item.variants.length > 0 ? (
                   <ul style={{ paddingLeft: "16px", margin: 0 }}>

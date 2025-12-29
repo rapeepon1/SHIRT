@@ -1,11 +1,12 @@
-// pages/checkout.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, CreditCard } from "lucide-react";
+import { useAuth } from "../context/authcontext"
 import { useCart } from "../context/cartcontext";
 import "../css/checkout.css";
 
 const Checkout = () => {
+  const { token } = useAuth()
   const { cart, clearCart } = useCart();
   const [address, setAddress] = useState({ name: "", phone: "", detail: "" });
   const navigate = useNavigate();
@@ -26,7 +27,8 @@ const Checkout = () => {
     try {
       const response = await fetch("http://localhost:3000/order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
           items: cart,
           total_amount: total,
@@ -39,8 +41,8 @@ const Checkout = () => {
 
       if (response.ok) {
         alert("สั่งซื้อสำเร็จ!");
-        clearCart(); // ล้างตะกร้าสินค้า
-        navigate("/order"); // ไปหน้าติดตามคำสั่งซื้อ
+        clearCart();
+        navigate("/order");
       } else {
         alert("ข้อผิดพลาด: " + data.message);
       }
@@ -68,12 +70,11 @@ const Checkout = () => {
             className="summary-item"
           >
             <span>
-              {/* ตรวจสอบว่ามีข้อมูลครบก่อนแสดงผล */}
+
               {item.name || "สินค้า"} ({item.size || "-"}/{item.color || "-"}) x{" "}
               {item.quantity || 0}
             </span>
             <span>
-              {/* ใช้ Number() เพื่อป้องกัน NaN และกำหนดค่าเริ่มต้นเป็น 0 */}
               {(
                 Number(item.price || 0) * Number(item.quantity || 0)
               ).toLocaleString()}{" "}

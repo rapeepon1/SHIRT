@@ -36,7 +36,6 @@ const Cart = () => {
 
               <span className="cart-item-qty">จำนวน: {item.quantity}</span>
 
-              {/* 4. ส่ง product_id ไปให้ removeItem */}
               <button
                 className="btn-remove"
                 onClick={() => removeItem(item.product_detail_id)}

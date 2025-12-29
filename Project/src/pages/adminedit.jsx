@@ -10,19 +10,19 @@ const AdminEdit = () => {
   const [product, setProduct] = useState({
     product_name: "",
     product_price: "",
-    product_image: ""
+    product_image: "",
   });
 
   const [variants, setVariants] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/product/${id}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setProduct({
           product_name: data.product_name,
           product_price: data.product_price,
-          product_image: data.product_image
+          product_image: data.product_image,
         });
         setVariants(data.variants || []);
       });
@@ -41,31 +41,31 @@ const AdminEdit = () => {
     setVariants(variants.filter((_, index) => index !== i));
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const payload = {
-    product_name: product.product_name,
-    product_price: Number(product.product_price),
-    product_image: product.product_image || null,
-    variants: variants.map(v => ({
-      size: v.size,
-      color: v.color,
-      stock: Number(v.stock),
-    })),
+    const payload = {
+      product_name: product.product_name,
+      product_price: Number(product.product_price),
+      product_image: product.product_image || null,
+      variants: variants.map((v) => ({
+        product_detail_id: v.product_detail_id,
+        size: v.size,
+        color: v.color,
+        stock: Number(v.stock),
+      })),
+    };
+
+    const res = await fetch(`http://localhost:3000/product/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+
+    alert("อัปเดตเรียบร้อย");
+    navigate("/admin_product/${id}");
   };
-
-  const res = await fetch(`http://localhost:3000/product/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  const result = await res.json();
-
-  alert("อัปเดตเรียบร้อย");
-  navigate("/admin_product/${id}")
-};
-
 
   return (
     <div className="admin-edit-container">
@@ -79,18 +79,24 @@ const AdminEdit = () => {
         <input
           placeholder="ชื่อสินค้า"
           value={product.product_name}
-          onChange={e => setProduct({ ...product, product_name: e.target.value })}
+          onChange={(e) =>
+            setProduct({ ...product, product_name: e.target.value })
+          }
         />
         <input
           type="number"
           placeholder="ราคา"
           value={product.product_price}
-          onChange={e => setProduct({ ...product, product_price: e.target.value })}
+          onChange={(e) =>
+            setProduct({ ...product, product_price: e.target.value })
+          }
         />
         <input
           placeholder="รูปสินค้า"
           value={product.product_image}
-          onChange={e => setProduct({ ...product, product_image: e.target.value })}
+          onChange={(e) =>
+            setProduct({ ...product, product_image: e.target.value })
+          }
         />
 
         <h3>Size / Color / Stock</h3>
@@ -100,18 +106,18 @@ const AdminEdit = () => {
             <input
               placeholder="Size"
               value={v.size}
-              onChange={e => handleVariantChange(i, "size", e.target.value)}
+              onChange={(e) => handleVariantChange(i, "size", e.target.value)}
             />
             <input
               placeholder="Color"
               value={v.color}
-              onChange={e => handleVariantChange(i, "color", e.target.value)}
+              onChange={(e) => handleVariantChange(i, "color", e.target.value)}
             />
             <input
               type="number"
               placeholder="Stock"
               value={v.stock}
-              onChange={e => handleVariantChange(i, "stock", e.target.value)}
+              onChange={(e) => handleVariantChange(i, "stock", e.target.value)}
             />
             <button type="button" onClick={() => removeVariant(i)}>
               <Trash2 size={16} />
